@@ -166,7 +166,7 @@
         <div class="section base-row add-top-padding">
             <h1 class="tldr">
                 <b>TL;DR</b>:
-                Robot See Robot Do uses a <b>4D</b> <b>D</b>ifferentiable <b>P</b>art <b>M</b>odel (4D-DPM) to visually imitate articulated motions from an object scan and single monocular video.
+                Botany-Bot uses Gaussian Splatting and Garfield to create a segmented 3D reconstruction of plants and then uses this to guide a robot's interaction with the plant to reveal even more information.
             </h1>
             <video id="main-video" autobuffer muted autoplay loop controls playsinline>
                 <source id="mp4" src="data/supp_video.mp4" type="video/mp4">
@@ -181,7 +181,7 @@
             </p>
         </div>
 
-        <div class="section base-row add-top-padding">
+        <!-- <div class="section base-row add-top-padding">
             <h1 class="tldr">
                 Humans imitate manipulation by watching <b>object</b> motion, not <b>hand</b> motion. RSRD does the same. <br>
                 This enables imitation from a single video robust to orientation and across the human-robot embodiment gap.
@@ -195,9 +195,9 @@
                 <img src="data/favicon.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
                 <img src="data/favicon.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
             </div>
-        </div>
+        </div> -->
 
-        <div class="section base-row add-top-padding">
+        <!-- <div class="section base-row add-top-padding">
             
 
             <h1>4D Part Reconstruction</h1>
@@ -206,15 +206,15 @@
                 By creating part-aware 3D representations using <a href="https://www.garfield.studio/" class="author-text" target="_blank">GARField</a> (parts, toggle for clusters) and 
                 <a href="https://github.com/facebookresearch/dinov2" class="author-text"target="_blank">DINOv2</a> (tracking SE3 pose),
                 these smartphone-captured inputs can generate these 4D reconstructions:
-            </p>
+            </p> -->
             
             
-            <div id="main-results">
-                <h1 class="tldr"><b>Input demonstration video</b></h1>
-            <div class="video-carousel-wrapper">
-                <div class="carousel-container" id="videoCarousel">
+            <!-- <div id="main-results">
+                <h1 class="tldr"><b>Input demonstration video</b></h1> -->
+            <!-- <div class="video-carousel-wrapper">
+                <div class="carousel-container" id="videoCarousel"> -->
                     <!-- Add your video elements here -->
-                    <div class="carousel-item" id="bear_video">
+                    <!-- <div class="carousel-item" id="bear_video">
                         <video autoplay muted loop playsinline height="400px">
                             <source src="data/demo_vids/cal_bear_naked_wave.mp4" type="video/mp4">
                         </video>
@@ -233,8 +233,8 @@
                         <video autoplay muted loop playsinline height="400px">
                             <source src="data/demo_vids/scissors2.mp4" type="video/mp4">
                         </video>
-                    </div>
-                    <div class="carousel-item" id="sunglasses_video">
+                    </div> -->
+                    <!-- <div class="carousel-item" id="sunglasses_video">
                         <video autoplay muted loop playsinline height="400px">
                             <source src="data/demo_vids/sunglasses_fold.mp4" type="video/mp4">
                         </video>
@@ -260,12 +260,12 @@
                         </video>
                     </div>
                 </div>
-            </div>
+            </div> -->
             <!-- <h1 class="tldr"><b>
                 <img src="data/drag_icon.png" alt="" class="inline-image">Click and move me!<img src="data/drag_icon.png" alt="" class="inline-image">
             </b></h1> -->
             
-                <div id="iframe-container" class="iframe-container">
+                <!-- <div id="iframe-container" class="iframe-container">
                     <div class="click-and-move-overlay">
                         <h1 class="tldr">
                             <b>
@@ -351,9 +351,9 @@
                 <img src="data/favicon.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
                 <img src="data/favicon.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
             </div>
-        </div>
+        </div> -->
 
-        <div class="section base-row add-top-padding">
+        <!-- <div class="section base-row add-top-padding">
             <h1>Robot Motion Retargeting</h1>
             <p class="paragraph">
                 After recovering 3D part motion, RSRD optimizes grasps and robot motions to reproduce the 4D reconstructions.
@@ -464,10 +464,10 @@
                     </div>
                 </div>
             </p>
-        </div>
+        </div> -->
 
         <!-- Just for vertical spacing... -->
-        <div class="section add-top-padding">
+        <!-- <div class="section add-top-padding">
             <div class="base-row">
                 <img src="data/favicon.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
                 <img src="data/favicon.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
@@ -489,9 +489,9 @@
                 Because 4D-DPM uses gradient descent, any differentiable prior is easily incorporated like temporal smoothness and rigidity.
             </p>
             <img src="data/4ddpm_ablation.jpg" style="max-width: 90%" />
-         </div>
+         </div> -->
 
-        <div class="section base-row add-top-padding">
+        <!-- <div class="section base-row add-top-padding">
             <h1>Retargeting Robot Trajectory</h1>
             <p class="paragraph">
                 With the recovered 3D part motion and the object placed in the robot workspace,
@@ -556,14 +556,14 @@
             </p>
             </div>
             <!-- Just for vertical spacing... -->
-        <div class="section add-top-padding">
+        <!-- <div class="section add-top-padding">
             <div class="base-row">
                 <img src="data/favicon.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
                 <img src="data/favicon.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
                 <img src="data/favicon.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
             </div>
-        </div>
-        <div class="section base-row add-top-padding">
+        </div> --> -->
+        <!-- <div class="section base-row add-top-padding">
             <h1>Limitations and Failures</h1>
             <p class="paragraph">
                 4D monocular reconstruction is an extremely under-constrained and challenging problem, and 4D-DPM still suffers from sensitivity to demonstration viewpoint, occlusions, reconstruction quality, and more.
@@ -631,10 +631,10 @@
                     </video>
                 </div>
             </div>
-        </div>
+        </div> -->
 
 
-        <div class="section citation" style="margin-top: 50px">
+        <!-- <div class="section citation" style="margin-top: 50px">
             <h1 id="abstract">Citation </h1>
             <p class="paragraph"> If you use this work or find it helpful, please consider citing: (bibtex) </p>
             <pre id="codecell0">@inproceedings{kerr2024rsrd,
@@ -643,7 +643,7 @@
 &nbsp;booktitle={8th Annual Conference on Robot Learning},
 &nbsp;year={2024},
 &nbsp;url={https://openreview.net/forum?id=2LLu3gavF1}
-}
+} -->
 </pre>
         </div>
         <footer>
