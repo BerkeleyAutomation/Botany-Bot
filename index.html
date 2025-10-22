@@ -113,7 +113,7 @@
         <!-- Submission status -->
         <div class="title-row">
             <!-- <h2 class="subheader">CoRL 2024 (Oral)</h1> -->
-            <h2 class="subheader">Under Review</h1>
+            <h2 class="subheader">IROS 2025 </h1>
         </div>
 
         <!-- Paper / code / data URLs -->
@@ -174,40 +174,57 @@
         <div class="section base-row add-top-padding">
             <h1>Abstract</h1>
             <p class="paragraph">
-                Commercial plant phenotyping systems that produce high-quality 3D reconstructions can cost hundreds of thousands of dollars. In addition, due to leaf occlusion, they cannot perceive many plant details. In this paper, we present Botany-Bot, a low-cost system for building detailed “annotated digital twins” of living plants using two stereo cameras, a digital turntable inside a lightbox, and an industrial robot arm, and 3D segmentated Gaussian Splat models. We also present robot algorithms for manipulating leaves to take high-resolution indexable images of occluded details such as stem buds and the underside/topside of leaves. Results from experiments suggest that the system can segment leaves with 90.8% accuracy, detect leaves with 86.2% accuracy, lift/push leaves with 77.9% accuracy, and take detailed overside/underside images with 77.3% accuracy.
+                Commercial plant phenotyping systems using fixed cameras cannot perceive many plant details due to leaf occlusion. In this paper, we present Botany-Bot, a system for building detailed “annotated digital twins” of living plants using two stereo cameras, a digital turntable inside a lightbox, an industrial robot arm, and 3D segmentated Gaussian Splat models. We also present robot algorithms for manipulating leaves to take high-resolution indexable images of occluded details such as stem buds and the underside/topside of leaves. Results from experiments suggest that Botany-Bot can segment leaves with 90.8% accuracy, detect leaves with 86.2% accuracy, lift/push leaves with 77.9% accuracy, and take detailed overside/underside images with 77.3% accuracy. 
             </p>
         </div>
 
-        <!-- <div class="section base-row add-top-padding">
+        <div class="section base-row add-top-padding">
+            <h1>Full Pipeline</h1>
             <h1 class="tldr">
-                Humans imitate manipulation by watching <b>object</b> motion, not <b>hand</b> motion. RSRD does the same. <br>
-                This enables imitation from a single video robust to orientation and across the human-robot embodiment gap.
+                Botany-Bot allows you to obtain a <b>3D model</b> of plants from a scan and then use a robot arm to manipulate the plant's leaves to obtain more information than the 3D model currently provides. <br>
             </h1>
-            <img src="data/rsrd_mainfig.jpg" style="max-width: 100%" />
+            <img src="data/pipeline.png" style="max-width: 100%" />
         </div>
 
         <div class="section add-top-padding">
             <div class="base-row">
-                <img src="data/favicon.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
-                <img src="data/favicon.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
-                <img src="data/favicon.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
+                <img src="data/botanybot.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
+                <img src="data/botanybot.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
+                <img src="data/botanybot.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
             </div>
-        </div> -->
+        </div>
 
-        <!-- <div class="section base-row add-top-padding">
+        <div class="section base-row add-top-padding">
             
 
-            <h1>4D Part Reconstruction</h1>
+            <h1>Plant Modeling</h1>
             <p class="paragraph">
-                RSRD takes in <b>1) </b>a multi-view object scan and <b>2)</b> a monocular demonstration video.
-                By creating part-aware 3D representations using <a href="https://www.garfield.studio/" class="author-text" target="_blank">GARField</a> (parts, toggle for clusters) and 
-                <a href="https://github.com/facebookresearch/dinov2" class="author-text"target="_blank">DINOv2</a> (tracking SE3 pose),
-                these smartphone-captured inputs can generate these 4D reconstructions:
-            </p> -->
+                Botany-Bot uses a light box, two fixed cameras and a digital turntable to obtain a plant scan. To obtain multi-view camera poses we place an ArUco
+                marker on the turntable and calibrate the camera-to-turntable pose for angles through which the turntable moves. Next, we place the plant on top of
+                the turntable and repeat the same angles, which results in a multi-view posed capture. We utilize two ZED 2Stereo cameras oriented vertically, for a total of 4 angles of elevation, and rotate the turntable to evenly spaced radial angles. Every plant also has an ArUco marker which we use to save a relative pose between the plant and the turntable by calculating the relative pose between the camera-
+                to-turntable pose and the camera-to-plant pose.
+            </p>
+             <img src="data/scan_platform.png" style="max-width: 100%" />
+
+            <h1>3D Plant Reconstruction and Segmentation</h1>
+            <p class="paragraph">
+                The rotating turntable multiview
+                capture breaks the core fundamental assumption in NeRF
+                and 3DGS that the scene remain static during capture in two
+                ways: 1) the background around the object is static relative
+                to the camera, and 2) lighting on the surface of the object
+                is not 3D-consistent. To alleviate 1), we preprocess input
+                data by automatically masking the potted plant with <a href="https://github.com/facebookresearch/sam2" class="author-text"target="_blank">Segment
+                Anything 2 (SAM 2)</a>. During radiance field construction,
+                we do not compute standard loss functions on pixels lying
+                outside this mask. We implement an extra L1 loss between
+                the potted plant’s mask and accumulation in the gaussian
+                splatting reconstruction which allows us to delete spurious geometry in the scene. We refer to this loss as an alpha loss.
+                We use <a href="https://www.garfield.studio/" class="author-text"target="_blank">GARField</a>, for segmenting the various parts of the plants. See below the Gaussian splatting reconstruction for the plants and click parts to see the resultant segmentation.
+            </p>
             
-            
-            <!-- <div id="main-results">
-                <h1 class="tldr"><b>Input demonstration video</b></h1> -->
+            <div id="main-results">
+                <h1 class="tldr"><b>Plant Visualizations</b></h1>
             <!-- <div class="video-carousel-wrapper">
                 <div class="carousel-container" id="videoCarousel"> -->
                     <!-- Add your video elements here -->
@@ -230,8 +247,8 @@
                         <video autoplay muted loop playsinline height="400px">
                             <source src="data/demo_vids/scissors2.mp4" type="video/mp4">
                         </video>
-                    </div> -->
-                    <!-- <div class="carousel-item" id="sunglasses_video">
+                    </div>
+                    <div class="carousel-item" id="sunglasses_video">
                         <video autoplay muted loop playsinline height="400px">
                             <source src="data/demo_vids/sunglasses_fold.mp4" type="video/mp4">
                         </video>
@@ -256,13 +273,18 @@
                             <source src="data/demo_vids/usb_plug_unplug3.mp4" type="video/mp4">
                         </video>
                     </div>
+                    <div class="carousel-item" id="jan12_video">
+                        <video autoplay muted loop playsinline height="400px">
+                            <source src="data/demo_vids/sunglasses_fold.mp4" type="video/mp4">
+                        </video>
+                    </div>
                 </div>
             </div> -->
             <!-- <h1 class="tldr"><b>
                 <img src="data/drag_icon.png" alt="" class="inline-image">Click and move me!<img src="data/drag_icon.png" alt="" class="inline-image">
             </b></h1> -->
             
-                <!-- <div id="iframe-container" class="iframe-container">
+                <div id="iframe-container" class="iframe-container">
                     <div class="click-and-move-overlay">
                         <h1 class="tldr">
                             <b>
@@ -273,49 +295,44 @@
                         </h1>
                     </div>
                     <iframe
-                        id="bear"
+                        id="pepper1"
                         class = "iframe"
-                        data-src="https://rsrd-anonymous.github.io/build/?playbackPath=https://rsrd-anonymous.github.io/recordings/bear_animation.viser&initDistanceScale=1.1&gaussianGroupColorShuffleSeed=1"
+                        data-src="https://github.com/BerkeleyAutomation/Botany-Bot/build/?playbackPath=https://github.com/BerkeleyAutomation/Botany-Bot/recordings/pepper1.viser&initDistanceScale=15"
                     ></iframe>
                     <iframe
-                        id = "nerfgun"
+                        id = "pepper2"
                         class = "iframe"
-                        data-src="https://rsrd-anonymous.github.io/build/?playbackPath=https://rsrd-anonymous.github.io/recordings/nerfgun_animation.viser&gaussianGroupColorShuffleSeed=3"
+                        data-src="https://github.com/BerkeleyAutomation/Botany-Bot/build/?playbackPath=https://github.com/BerkeleyAutomation/Botany-Bot/recordings/pepper2.viser&initDistanceScale=15"
                     ></iframe>
                     <iframe
-                        id = "redbox"  
+                        id = "pepper3"  
                         class = "iframe"
-                        data-src="https://rsrd-anonymous.github.io/build/?playbackPath=https://rsrd-anonymous.github.io/recordings/red_box_animation.viser&gaussianGroupColorShuffleSeed=13"
+                        data-src="https://github.com/BerkeleyAutomation/Botany-Bot/build/?playbackPath=https://github.com/BerkeleyAutomation/Botany-Bot/recordings/pepper3.viser&initDistanceScale=15"
                     ></iframe>
                     <iframe
-                        id = "scissors"  
+                        id = "alocasia"  
                         class = "iframe"
-                        data-src="https://rsrd-anonymous.github.io/build/?playbackPath=https://rsrd-anonymous.github.io/recordings/scissors_animation.viser&initDistanceScale=1.1&gaussianGroupColorShuffleSeed=4"
+                        data-src="https://github.com/BerkeleyAutomation/Botany-Bot/build/?playbackPath=https://github.com/BerkeleyAutomation/Botany-Bot/recordings/alocasia.viser&initDistanceScale=12"
                     ></iframe>
                     <iframe
-                        id = "sunglasses"  
+                        id = "anthurium"  
                         class = "iframe"
-                        data-src="https://rsrd-anonymous.github.io/build/?playbackPath=https://rsrd-anonymous.github.io/recordings/sunglasses_animation.viser&initDistanceScale=1.2&gaussianGroupColorShuffleSeed=0"
+                        data-src="https://github.com/BerkeleyAutomation/Botany-Bot/build/?playbackPath=https://github.com/BerkeleyAutomation/Botany-Bot/recordings/anthurium.viser&initDistanceScale=12"
                     ></iframe>
                     <iframe
-                        id="ledlight"
+                        id="pinkprincess"
                         class = "iframe"
-                        data-src="https://rsrd-anonymous.github.io/build/?playbackPath=https://rsrd-anonymous.github.io/recordings/led_light.viser&initDistanceScale=1.3&gaussianGroupColorShuffleSeed=5"
+                        data-src="https://github.com/BerkeleyAutomation/Botany-Bot/build/?playbackPath=https://github.com/BerkeleyAutomation/Botany-Bot/recordings/pinkprincess.viser&initDistanceScale=12"
                     ></iframe>
                     <iframe
-                    id="stapler"
+                    id="belize"
                         class = "iframe"
-                        data-src="https://rsrd-anonymous.github.io/build/?playbackPath=https://rsrd-anonymous.github.io/recordings/stapler.viser&gaussianGroupColorShuffleSeed=4"
+                        data-src="https://github.com/BerkeleyAutomation/Botany-Bot/build/?playbackPath=https://github.com/BerkeleyAutomation/Botany-Bot/recordings/belize.viser&initDistanceScale=12"
                     ></iframe>
                     <iframe
-                    id="usbplug"
+                    id="croton"
                         class = "iframe"
-                        data-src="https://rsrd-anonymous.github.io/build/?playbackPath=https://rsrd-anonymous.github.io/recordings/usb_plug.viser&gaussianGroupColorShuffleSeed=3"
-                    ></iframe>
-                    <iframe
-                    id="wirecutters"
-                        class = "iframe"
-                        data-src="https://rsrd-anonymous.github.io/build/?playbackPath=https://rsrd-anonymous.github.io/recordings/wirecutters.viser&initDistanceScale=1.4&gaussianGroupColorShuffleSeed=9"
+                        data-src="https://github.com/BerkeleyAutomation/Botany-Bot/build/?playbackPath=https://github.com/BerkeleyAutomation/Botany-Bot/recordings/croton.viser&initDistanceScale=12"
                     ></iframe>
                 </div>
                 <div style="position: relative; display: flex;">
@@ -323,32 +340,78 @@
                         &#8249;
                     </button>
                     <div class="results-slide-row" id="results-objs-scroll">
-                        <div data-img-src="data/thumbnails/bear_zoomed.jpg" data-id="bear-thumb" data-label="Bear"></div>
-                        <div data-img-src="data/thumbnails/nerfgun_zoomed.jpg" data-id="nerfgun-thumb" data-label="Nerfgun"></div>
-                        <div data-img-src="data/thumbnails/red_box_zoomed.jpg" data-id="redbox-thumb" data-label="Box"></div>
-                        <div data-img-src="data/thumbnails/scissors_zoomed.jpg" data-id="scissors-thumb" data-label="Scissors"></div>
-                        <div data-img-src="data/thumbnails/sunglasses_zoomed.jpg" data-id="sunglasses-thumb" data-label="Sunglasses"></div>
-                        <div data-img-src="data/thumbnails/led_light_zoomed.jpg" data-id="ledlight-thumb" data-label="LED Light"></div>
-                        <div data-img-src="data/thumbnails/stapler_zoomed.jpg" data-id="stapler-thumb" data-label="Stapler"></div>
-                        <div data-img-src="data/thumbnails/wirecutter_zoomed.jpg" data-id="wirecutters-thumb" data-label="Wirecutters"></div>
-                        <div data-img-src="data/thumbnails/usb_plug_zoomed.jpg" data-id="usbplug-thumb" data-label="USB Plug"></div>
+                        <div data-img-src="data/thumbnails/pepper1_zoomed.jpg" data-id="pepper1-thumb" data-label="Pepper 1"></div>
+                        <div data-img-src="data/thumbnails/pepper2_zoomed.jpg" data-id="pepper2-thumb" data-label="Pepper 2"></div>
+                        <div data-img-src="data/thumbnails/pepper3_zoomed.jpg" data-id="pepper3-thumb" data-label="Pepper 3"></div>
+                        <div data-img-src="data/thumbnails/alocasia_zoomed.jpg" data-id="alocasia-thumb" data-label="Alocasia"></div>
+                        <div data-img-src="data/thumbnails/anthurium_zoomed.jpg" data-id="anthurium-thumb" data-label="Anthurium"></div>
+                        <div data-img-src="data/thumbnails/pinkprincess_zoomed.jpg" data-id="pinkprincess-thumb" data-label="Pink Princess"></div>
+                        <div data-img-src="data/thumbnails/belize_zoomed.jpg" data-id="belize-thumb" data-label="Belize"></div>
+                        <div data-img-src="data/thumbnails/croton_zoomed.jpg" data-id="croton-thumb" data-label="Croton"></div>
                     </div>
                     <button class="results-slide-arrow" id="results-slide-arrow-next" onclick="results_slide_right()">
                         &#8250;
                     </button>
                 </div>
             </div> 
-            <p class="tldr">These 4D reconstructions are rendered in-browser! If you think that's cool, check out <a href="https://viser.studio/latest/" class="author-text" target="_blank">Viser</a>!</p>
+            <p class="tldr">These 3D segmented reconstructions are rendered in-browser! If you think that's cool, check out <a href="https://viser.studio/latest/" class="author-text" target="_blank">Viser</a>!</p>
             
         </div>
 
         <div class="section add-top-padding">
             <div class="base-row">
-                <img src="data/favicon.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
-                <img src="data/favicon.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
-                <img src="data/favicon.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
+                <img src="data/botanybot.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
+                <img src="data/botanybot.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
+                <img src="data/botanybot.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
             </div>
-        </div> -->
+        </div>
+
+        <div class="section base-row add-top-padding">
+            <h1>Inspection Planning</h1>
+                <p class="paragraph">
+                    Certain plant regions like leaf undersides, can be under-reconstructed in teh resulting 3D reconstruction while being crucial for detecting issues such as pest infestations or diseases. To
+                    address this, Botany-Bot uses robot interaction with a custom
+                    end-effector to lift/push down each leaf toward a static
+                    camera, capturing high-resolution underside/overside images. 
+                    <br>
+                </p>
+                <img src="data/robot_setup_fig_newer.png" style="max-width: 100%" />
+
+                <p class="paragraph">
+                    To achieve this we have three task primitives for
+                    manipulating a target leaf using the robot arm with its
+                    inspection tool and turntable.:
+
+                    <ol class="paragraph">
+                        <li>
+                            <b>Rotation Alignment</b>:The target leaf is rotated through
+                    the rotation of the turntable by θ such that its principal
+                    axis (i.e. the stem direction for the leaf) qi is aligned to
+                    the high resolution camera z-axis within a small margin ϵ
+                    and the leaf center is on the camera z-axis. We denote the
+                    turntable rotation set that satisfies the alignment condition
+                    to be Arotate ⊂ SO(2)
+                       </li>
+                        <li><b>Tool Positioning</b>: The inspection tool is moved directly
+                    above or underneath the leaf center to position it for
+                    lifting/pushing. This step ensures that the tool’s position
+                    p aligns with the leaf center in the horizontal plane:
+                    xprepare = (xi , yi , ztinitial ) where ztinitial is the initial height
+                    of the tool. The tool also needs to be parallel to the the
+                    leaf surface. We denote the inspection tool pose set that
+                    the tool positioning satisfies Aprepare ⊂ SE(3).</li>
+                        <li><b>Manipulation</b>: The inspection tool moves upward/down-
+                    ward while simultaneously rotating to lift/push down the
+                    leaf. The upward motion follows: xlift = (xi , yi , ztfinal )
+                    where ztfinal > ztinitial while the downward motion follows:
+                    xpush = (xi , yi , ztfinal ) where ztfinal < ztinitial . Simultaneously,
+                    the inspection tool rotates by an angle ϕ, applied as:
+                    Rlift/push ⊂ SO(3) so that the leaf is lifted/pushed down
+                    in a controlled manner. The inspection tool pose set
+                    Alift/push ⊂ SE(3) satisfies the lifting/pushing condition. </li>
+                </p>
+
+        </div>
 
         <!-- <div class="section base-row add-top-padding">
             <h1>Robot Motion Retargeting</h1>
@@ -461,14 +524,14 @@
                     </div>
                 </div>
             </p>
-        </div> -->
+        </div>
 
-        <!-- Just for vertical spacing... -->
-        <!-- <div class="section add-top-padding">
+        <!-- Just for vertical spacing...
+        <div class="section add-top-padding">
             <div class="base-row">
-                <img src="data/favicon.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
-                <img src="data/favicon.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
-                <img src="data/favicon.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
+                <img src="data/botanybot.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
+                <img src="data/botanybot.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
+                <img src="data/botanybot.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
             </div>
         </div>
          </div>
@@ -486,9 +549,9 @@
                 Because 4D-DPM uses gradient descent, any differentiable prior is easily incorporated like temporal smoothness and rigidity.
             </p>
             <img src="data/4ddpm_ablation.jpg" style="max-width: 90%" />
-         </div> -->
+         </div>
 
-        <!-- <div class="section base-row add-top-padding">
+        <div class="section base-row add-top-padding">
             <h1>Retargeting Robot Trajectory</h1>
             <p class="paragraph">
                 With the recovered 3D part motion and the object placed in the robot workspace,
@@ -551,15 +614,51 @@
                     </li>
                 </ol>
             </p>
+            </div> -->
+
+        <div class="section base-row add-top-padding">
+            <h1>Leaf Lifting/Pushing</h1>
+            <div class="video-container" style="max-width: 10000px;">
+                            <div class="video-item">
+                                <video autoplay muted loop playsinline>
+                                    <source src="data/lifting-pushing.mp4" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                        </div>
             </div>
             <!-- Just for vertical spacing... -->
-        <!-- <div class="section add-top-padding">
+        <div class="section add-top-padding">
             <div class="base-row">
-                <img src="data/favicon.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
-                <img src="data/favicon.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
-                <img src="data/favicon.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
+                <img src="data/botanybot.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
+                <img src="data/botanybot.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
+                <img src="data/botanybot.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
             </div>
-        </div> --> -->
+        </div>
+
+        <div class="section base-row add-top-padding">
+            <h1>Experiments</h1>
+                <p class="paragraph">
+                    RSRD takes in <b>1) </b>a multi-view object scan and <b>2)</b> a monocular demonstration video.
+                    By creating part-aware 3D representations using <a href="https://www.garfield.studio/" class="author-text" target="_blank">GARField</a> (parts, toggle for clusters) and 
+                    <a href="https://github.com/facebookresearch/dinov2" class="author-text"target="_blank">DINOv2</a> (tracking SE3 pose),
+                    these smartphone-captured inputs can generate these 4D reconstructions:
+                </p>
+                <img src="data/table1.png" style="max-width: 100%" />
+                <img src="data/table2.png" style="max-width: 100%" />
+                <img src="data/table3.png" style="max-width: 100%" />
+        </div>
+        <div class="section add-top-padding">
+            <div class="base-row">
+                <img src="data/botanybot.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
+                <img src="data/botanybot.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
+                <img src="data/botanybot.png" style="height: 40px; margin-left: 5px; margin-right: 5px; margin-top: 40px; margin-bottom: 40px;">
+            </div>
+        </div>
+
+
+
+
         <!-- <div class="section base-row add-top-padding">
             <h1>Limitations and Failures</h1>
             <p class="paragraph">
@@ -630,17 +729,75 @@
             </div>
         </div> -->
 
+        <div class="section base-row add-top-padding">
+            <h1>Limitations and Failures</h1>
+            <p class="paragraph">
+                Across 68 safely accessible leaves across 8 plants,
+                the robot can successfully lift/push 53 leaves. Where the
+                leaf is not sufficiently aligned with the camera, we mark
+                this as a failure even if the lift/push motion is executed
+                correctly. In one notable case (Croton), the robot successfully
+                pushes down a leaf but the leaf is broken. We do not include
+                this leaf among the considered results. Besides breakage,
+                for lifting/pushing, there are three main failure cases:
+            </p>
 
-        <!-- <div class="section citation" style="margin-top: 50px">
+            <ol class ="paragraph">
+                <li>Leaf obstructions</li>
+                <li>Plant dynamics</li>
+                <li>Pose error</li>
+            </ol>
+
+            <p class="paragraph">
+            A robot may fail to interact with a leaf properly if the gripper
+                accidentally catches on a lower leaf during its motion, bends
+                the stem, and causes the leaf to rotate out of the way. Also,
+                even if the robot made proper contact with the leaf initially,
+                the leaf may slip out of the way depending on how it is
+                connected to the stem. Any pose registration error will only
+                exacerbate these problems. Solving this would require some
+                form of visual closed-loop servoing to detect any errors.
+            </p>
+            <p class="paragraph">
+                Out of the 53 leaves that were pushed/lifted, their over-
+                sides/undersides are visible in 41 cases. For observing leaf oversides/undersides, the biggest challenges are singulating the leaf and choosing the correct distance to lift/push down the leaf. Most failure cases (6/12)
+                are due to a nearby leaf that gets lifted up/pushed down,
+                and blocks the underside of the target leaf from the camera
+                view. Collision-free, contact-aware motion planning with the
+                3D plant model would be required to “burrow” between
+                leaves carefully. Another failure mode (5/12) is the leaf being
+                lifted/pushed but not enough to expose its underside/overside.
+                This is because the leaf lift/push distance selection is a naive
+                implementation; the lift/push distance should depend on the
+                leaf’s position in the camera image center, as the leaves
+                lower on the camera perspective should be lifted up a larger
+                amount while leaves higher on the camera perspective should
+                be pushed up a larger amount. Another solution could be
+                to implement a closed-loop motion that takes a image just
+                before losing leaf contact. Lastly, we notice that the gripper
+                did not always orient parallel to the leaf surface. Improving the plant-specific tuning of this parameter could help fix this.
+            </p>
+            <!-- <div class="video-container">
+                <div class="video-item">
+                    <video autoplay muted loop playsinline>
+                        <source src="data/hand_occ.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div> -->
+        </div>
+
+
+        <div class="section citation" style="margin-top: 50px">
             <h1 id="abstract">Citation </h1>
             <p class="paragraph"> If you use this work or find it helpful, please consider citing: (bibtex) </p>
-            <pre id="codecell0">@inproceedings{kerr2024rsrd,
-&nbsp;title={Robot See Robot Do: Imitating Articulated Object Manipulation with Monocular 4D Reconstruction},
-&nbsp;author={Justin Kerr and Chung Min Kim and Mingxuan Wu and Brent Yi and Qianqian Wang and Ken Goldberg and Angjoo Kanazawa},
-&nbsp;booktitle={8th Annual Conference on Robot Learning},
-&nbsp;year={2024},
-&nbsp;url={https://openreview.net/forum?id=2LLu3gavF1}
-} -->
+            <pre id="codecell0">@inproceedings{adebola2025botanybot,
+&nbsp;title={Botany-Bot: Digital Twin Monitoring of Occluded and Underleaf Plant Structures with Gaussian Splats},
+&nbsp;author={Simeon Adebola and Chung Min Kim `and Justin Kerr and Shuangyu Xie and  Prithvi Akella and  Jose Luis Susa Rincon and Eugen Solowjow and Ken Goldberg},
+&nbsp;booktitle={2025 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)},
+&nbsp;year={2025},
+<!-- &nbsp;url={https://openreview.net/forum?id=2LLu3gavF1} -->
+}
 </pre>
         </div>
         <footer>
