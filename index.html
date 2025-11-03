@@ -386,29 +386,29 @@
                         <li>
                             <b>Rotation Alignment</b>:The target leaf is rotated through
                     the rotation of the turntable by θ such that its principal
-                    axis (i.e. the stem direction for the leaf) qi is aligned to
+                    axis (i.e. the stem direction for the leaf) q<sub>i</sub> is aligned to
                     the high resolution camera z-axis within a small margin ϵ
                     and the leaf center is on the camera z-axis. We denote the
                     turntable rotation set that satisfies the alignment condition
-                    to be Arotate ⊂ SO(2)
+                    to be A<sub>rotate</sub> ⊂ SO(2)
                        </li>
                         <li><b>Tool Positioning</b>: The inspection tool is moved directly
                     above or underneath the leaf center to position it for
                     lifting/pushing. This step ensures that the tool’s position
                     p aligns with the leaf center in the horizontal plane:
-                    xprepare = (xi , yi , ztinitial ) where ztinitial is the initial height
+                    x<sub>prepare</sub> = (x<sub>i</sub> , y<sub>i</sub> , z<sub>t<sub>initial</sub></sub> ) where z<sub>t<sub>initial</sub></sub> is the initial height
                     of the tool. The tool also needs to be parallel to the the
                     leaf surface. We denote the inspection tool pose set that
-                    the tool positioning satisfies Aprepare ⊂ SE(3).</li>
+                    the tool positioning satisfies A<sub>prepare</sub> ⊂ SE(3).</li>
                         <li><b>Manipulation</b>: The inspection tool moves upward/down-
                     ward while simultaneously rotating to lift/push down the
-                    leaf. The upward motion follows: xlift = (xi , yi , ztfinal )
-                    where ztfinal > ztinitial while the downward motion follows:
-                    xpush = (xi , yi , ztfinal ) where ztfinal < ztinitial . Simultaneously,
+                    leaf. The upward motion follows: x<sub>lift</sub> = (x<sub>i</sub> , y<sub>i</sub> , z<sub>t<sub>final</sub></sub> )
+                    where z<sub>t<sub>final</sub></sub> > z<sub>t<sub>initial</sub></sub> while the downward motion follows:
+                    x<sub>push</sub> = (x<sub>i</sub> , y<sub>i</sub> , z<sub>t<sub>final</sub></sub> ) where z<sub>t<sub>final</sub></sub> < z<sub>t<sub>initial</sub></sub> . Simultaneously,
                     the inspection tool rotates by an angle ϕ, applied as:
-                    Rlift/push ⊂ SO(3) so that the leaf is lifted/pushed down
+                    R<sub>lift/push</sub> ⊂ SO(3) so that the leaf is lifted/pushed down
                     in a controlled manner. The inspection tool pose set
-                    Alift/push ⊂ SE(3) satisfies the lifting/pushing condition. </li>
+                    A<sub>lift/push</sub> ⊂ SE(3) satisfies the lifting/pushing condition. </li>
                 </p>
 
         </div>
