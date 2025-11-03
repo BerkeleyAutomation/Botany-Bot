@@ -380,7 +380,7 @@
                 <p class="paragraph">
                     To achieve this we have three task primitives for
                     manipulating a target leaf using the robot arm with its
-                    inspection tool and turntable.:
+                    inspection tool and turntable:
 
                     <ol class="paragraph">
                         <li>
@@ -636,14 +636,44 @@
             </div>
         </div>
 
-        <div class="section base-row add-top-padding">
+         <div class="section base-row add-top-padding">
             <h1>Experiments</h1>
+            <div>
                 <p class="paragraph">
+                    We evaluate the following three metrics for 3D reconstruction:
+                </p>
+                <ol class="paragraph">
+                    <li>
+                        Ratio of leaves correctly <b>segmented</b> on each plant
+                    </li>
+                    <li>
+                        Ratio of leaves successfully <b>detected</b> per plant
+                    </li>
+                    <li>
+                        Physical accuracy of leaf area and leaf height on a select subset of leaves measured against ground-truth
+                    </li>
+                </ol>
+
+                <p class="paragraph">
+                    and these two metrics for autonomous robot leaf inspection:
+                </p>
+
+                <ol class="paragraph">
+                    <li>
+                        Number of leaves autonomously <b>lifted</b> by robot
+                    </li>
+                    <li>
+                        Undersides of leaves fully <b>revealed</b> to high-res camera
+                    </li>
+                </ol>
+            </div>
+
+                <!-- <p class="paragraph">
                     RSRD takes in <b>1) </b>a multi-view object scan and <b>2)</b> a monocular demonstration video.
                     By creating part-aware 3D representations using <a href="https://www.garfield.studio/" class="author-text" target="_blank">GARField</a> (parts, toggle for clusters) and 
                     <a href="https://github.com/facebookresearch/dinov2" class="author-text"target="_blank">DINOv2</a> (tracking SE3 pose),
                     these smartphone-captured inputs can generate these 4D reconstructions:
-                </p>
+                </p> -->
                 <img src="data/table1.png" style="max-width: 100%" />
                 <img src="data/table2.png" style="max-width: 100%" />
                 <img src="data/table3.png" style="max-width: 100%" />
